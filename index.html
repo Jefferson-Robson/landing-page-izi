@@ -1,11 +1,105 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="description" content="Encontre o imóvel dos seus sonhos com a IZI Imobiliária. Simule seu financiamento agora.">
+    
+    <title>IZI Imobiliária - Seu Sonho, Nossa Missão</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <h1>IZI<span>.</span></h1>
+            </div>
+            <nav class="nav-menu">
+                <a href="#simulador" class="btn-primary">Simular Agora</a>
+                <a href="#" class="whatsapp-link"><i class="fab fa-whatsapp"></i> Falar no Zap</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <h2>O caminho mais curto para a sua <span class="highlight">chave nova</span>.</h2>
+                    <p>Tecnologia e agilidade para você comprar o seu imóvel sem burocracia. Faça uma simulação em tempo real.</p>
+                    <ul class="hero-benefits">
+                        <li><i class="fas fa-check-circle"></i> Aprovação rápida</li>
+                        <li><i class="fas fa-check-circle"></i> Melhores taxas do mercado</li>
+                        <li><i class="fas fa-check-circle"></i> Atendimento 100% digital</li>
+                    </ul>
+                </div>
+
+                <div class="hero-card" id="simulador">
+                    <div class="card-header">
+                        <h3><i class="fas fa-calculator"></i> Simule seu Financiamento</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="valorImovel">Valor do Imóvel (R$)</label>
+                            <input type="number" id="valorImovel" placeholder="Ex: 350000">
+                        </div>
+
+                        <div class="form-group-row">
+                            <div class="form-group half">
+                                <label for="entrada">Entrada (R$)</label>
+                                <input type="number" id="entrada" placeholder="Ex: 70000">
+                            </div>
+                            <div class="form-group half">
+                                <label for="anos">Anos</label>
+                                <input type="number" id="anos" placeholder="Ex: 30">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="juros">Taxa de Juros Anual (%)</label>
+                            <input type="number" id="juros" value="9.5" step="0.1">
+                        </div>
+
+                        <button id="btnCalcular" class="btn-full">Calcular Parcelas</button>
+                        
+                        <div id="resultado" class="resultado-box hidden">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="lead-capture">
+            <div class="container">
+                <h3>Gostou da simulação?</h3>
+                <p>Receba o relatório detalhado e as melhores ofertas para o seu perfil no seu e-mail.</p>
+                <form class="lead-form">
+                    <input type="email" placeholder="Seu melhor e-mail" required>
+                    <button type="submit">Enviar Relatório</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>&copy; 2023 IZI Imobiliária. Todos os direitos reservados.</p>
+            <div class="socials">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+            </div>
+        </div>
+    </footer>
+
     <script src="js/calculadora.js"></script>
     <script src="js/main.js"></script>
+
 </body>
 </html>
