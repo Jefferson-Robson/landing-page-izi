@@ -64,10 +64,36 @@ document.addEventListener('DOMContentLoaded', function() {
     // Variável global para guardar o cálculo atual
     let resultadoPendente = null;
 
+    // --- FUNÇÃO DE DISPARO GTM (ATUALIZADA) ---
+    function dispararEventoGTM(origemDisparo, emailHash) {
+        console.log("Tentando disparar evento GTM..."); // Log para debug
+
+        window.dataLayer = window.dataLayer || [];
+        
+        // Pega o valor do imóvel para enriquecer os dados (importante p/ Ads)
+        let valorImovel = 0;
+        if(resultadoPendente && resultadoPendente.dados && resultadoPendente.dados.normal) {
+            valorImovel = resultadoPendente.dados.normal.saldoInicial;
+        }
+
+        window.dataLayer.push({
+            'event': 'generate_lead',
+            'lead_type': resultadoPendente ? resultadoPendente.tipo : 'desconhecido',
+            'lead_source': origemDisparo, // Diz se foi 'novo_lead' ou 'lead_retorno'
+            'user_email_hash': emailHash || 'nao_informado',
+            'valor_simulado': valorImovel
+        });
+
+        console.log("Evento 'generate_lead' enviado com sucesso!"); 
+    }
+
     // --- 4. VERIFICAR SE JÁ É LEAD (LOCALSTORAGE) ---
     function verificarLeadEProcessar() {
         const jaCadastrado = localStorage.getItem('izi_lead_cadastrado');
+        
         if (jaCadastrado === 'true') {
+            // ALTERAÇÃO: Dispara evento MESMO se já for cadastrado
+            dispararEventoGTM('lead_retorno', localStorage.getItem('izi_lead_nome'));
             mostrarResultadoNaTela();
         } else {
             abrirModal();
@@ -202,13 +228,8 @@ document.addEventListener('DOMContentLoaded', function() {
             localStorage.setItem('izi_lead_cadastrado', 'true');
             localStorage.setItem('izi_lead_nome', nomeUsuario); 
 
-            // 2. DISPARAR EVENTO PARA ANÚNCIOS (GTM/Facebook)
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-                'event': 'generate_lead',
-                'lead_type': resultadoPendente ? resultadoPendente.tipo : 'desconhecido',
-                'user_email_hash': emailUsuario 
-            });
+            // 2. DISPARAR EVENTO (Novo Lead)
+            dispararEventoGTM('novo_lead', emailUsuario);
             
             modal.classList.add('hidden');
             mostrarResultadoNaTela();
@@ -310,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
         box.scrollIntoView({ behavior: 'smooth' });
     }
 
-    // --- 9. AÇÃO DO BOTÃO DE RODAPÉ (NOVO) ---
+    // --- 9. AÇÃO DO BOTÃO DE RODAPÉ ---
     const btnFooter = document.getElementById('btn-footer-relatorio');
     
     if(btnFooter) {
@@ -327,7 +348,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Dá um pequeno alerta visual ou foco
                 document.getElementById('valorImovel').focus();
                 
-                // Opcional: Alerta suave
                 alert("Por favor, preencha os dados da simulação primeiro para gerarmos seu relatório personalizado! 🚀");
             }
         });
