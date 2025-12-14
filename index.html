@@ -2,28 +2,28 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="description" content="Encontre o imóvel dos seus sonhos com a IZI Imobiliária. Simule seu financiamento agora.">
-    
-    <title>IZI Imobiliária - Seu Sonho, Nossa Missão</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Encontre o imóvel dos seus sonhos com a IZI Imobiliária.">
+    <title>IZI Imobiliária - Simulação Avançada</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
     <header class="header">
         <div class="container header-container">
             <div class="logo">
-                <h1>IZI<span>.</span></h1>
+                <img src="https://cdn1.valuegaia.com.br/gaiasite/69877/TEMA.LOGOTIPO_SITE/b084481766de0b49224691c3ad6bdce7-logo-png.png" alt="Logo IZI" height="50">
             </div>
             <nav class="nav-menu">
                 <a href="#simulador" class="btn-primary">Simular Agora</a>
-                <a href="#" class="whatsapp-link"><i class="fab fa-whatsapp"></i> Falar no Zap</a>
+                <a href="https://wa.me/5541996291417?text=Olá! Gostaria de falar com um consultor da IZI." target="_blank" class="whatsapp-link">
+                    <i class="fab fa-whatsapp"></i> Falar no Zap
+                </a>
             </nav>
         </div>
     </header>
@@ -32,74 +32,131 @@
         <section class="hero">
             <div class="container hero-content">
                 <div class="hero-text">
-                    <h2>O caminho mais curto para a sua <span class="highlight">chave nova</span>.</h2>
-                    <p>Tecnologia e agilidade para você comprar o seu imóvel sem burocracia. Faça uma simulação em tempo real.</p>
+                    <h2>Descubra o poder da <span class="highlight">amortização</span>.</h2>
+                    <p>Veja como pequenos pagamentos extras podem economizar milhares de reais e reduzir anos do seu financiamento.</p>
                     <ul class="hero-benefits">
-                        <li><i class="fas fa-check-circle"></i> Aprovação rápida</li>
-                        <li><i class="fas fa-check-circle"></i> Melhores taxas do mercado</li>
-                        <li><i class="fas fa-check-circle"></i> Atendimento 100% digital</li>
+                        <li><i class="fas fa-check-circle"></i> Cálculo de economia real</li>
+                        <li><i class="fas fa-check-circle"></i> Redução de prazo automática</li>
+                        <li><i class="fas fa-check-circle"></i> Comparativo inteligente</li>
                     </ul>
                 </div>
 
                 <div class="hero-card" id="simulador">
-                    <div class="card-header">
-                        <h3><i class="fas fa-calculator"></i> Simule seu Financiamento</h3>
+                    <div class="tabs-nav">
+                        <button class="tab-link active" data-tab="tab-imovel">Por Imóvel</button>
+                        <button class="tab-link" data-tab="tab-renda">Por Renda</button>
                     </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label for="valorImovel">Valor do Imóvel (R$)</label>
-                            <input type="number" id="valorImovel" placeholder="Ex: 350000">
-                        </div>
 
-                        <div class="form-group-row">
-                            <div class="form-group half">
-                                <label for="entrada">Entrada (R$)</label>
-                                <input type="number" id="entrada" placeholder="Ex: 70000">
-                            </div>
-                            <div class="form-group half">
-                                <label for="anos">Anos</label>
-                                <input type="number" id="anos" placeholder="Ex: 30">
-                            </div>
+                    <div id="tab-imovel" class="tab-content active">
+                        <div class="card-header">
+                            <h3><i class="fas fa-home"></i> Simulação Detalhada</h3>
                         </div>
-
-                        <div class="form-group">
-                            <label for="juros">Taxa de Juros Anual (%)</label>
-                            <input type="number" id="juros" value="9.5" step="0.1">
-                        </div>
-
-                        <button id="btnCalcular" class="btn-full">Calcular Parcelas</button>
-                        
-                        <div id="resultado" class="resultado-box hidden">
+                        <form id="form-imovel">
+                            <div class="form-group">
+                                <label>Valor do Imóvel</label>
+                                <input type="text" id="valorImovel" placeholder="R$ 0,00" required>
                             </div>
+                            <div class="form-group-row">
+                                <div class="form-group half">
+                                    <label>Entrada</label>
+                                    <input type="text" id="entrada" placeholder="R$ 0,00" required>
+                                </div>
+                                <div class="form-group half">
+                                    <label>Prazo (Anos)</label>
+                                    <input type="number" id="anos" placeholder="30" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="background: #f0f8ff; padding: 10px; border-radius: 6px; border: 1px dashed #003366;">
+                                <label style="color: #003366;"><i class="fas fa-piggy-bank"></i> Pagar extra por mês? (Opcional)</label>
+                                <input type="text" id="valorExtra" placeholder="R$ 0,00">
+                                <small style="font-size: 0.75rem; color: #555;">Veja quanto você economiza adiantando parcelas.</small>
+                            </div>
+
+                            <div class="form-group-row">
+                                <div class="form-group half">
+                                    <label>Juros Anual (%)</label>
+                                    <input type="number" id="juros" value="9.5" step="0.1" required>
+                                </div>
+                                <div class="form-group half">
+                                    <label>Tabela</label>
+                                    <select id="tabela" style="width:100%; padding: 12px; border-radius: 6px; border:1px solid #ddd;">
+                                        <option value="price">PRICE (Fixa)</option>
+                                        <option value="sac">SAC (Decrescente)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-full">Calcular Economia</button>
+                        </form>
                     </div>
+
+                    <div id="tab-renda" class="tab-content hidden">
+                        <div class="card-header">
+                            <h3><i class="fas fa-wallet"></i> Análise de Renda</h3>
+                        </div>
+                        <form id="form-renda">
+                            <div class="form-group">
+                                <label>Renda Mensal Bruta</label>
+                                <input type="text" id="rendaMensal" placeholder="R$ 0,00" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Comprometimento (%)</label>
+                                <input type="number" id="comprometimento" value="30">
+                            </div>
+                            <div class="form-group-row">
+                                <div class="form-group half">
+                                    <label>Juros Anual (%)</label>
+                                    <input type="number" id="jurosRenda" value="9.5" step="0.1">
+                                </div>
+                                <div class="form-group half">
+                                    <label>Prazo (Anos)</label>
+                                    <input type="number" id="anosRenda" value="30">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-full">Descobrir Potencial</button>
+                        </form>
+                    </div>
+
+                    <div id="resultado" class="resultado-box hidden"></div>
                 </div>
             </div>
         </section>
-
+        
         <section class="lead-capture">
             <div class="container">
                 <h3>Gostou da simulação?</h3>
-                <p>Receba o relatório detalhado e as melhores ofertas para o seu perfil no seu e-mail.</p>
-                <form class="lead-form">
-                    <input type="email" placeholder="Seu melhor e-mail" required>
-                    <button type="submit">Enviar Relatório</button>
-                </form>
+                <p>Receba o relatório detalhado e as melhores ofertas no seu e-mail.</p>
+                <button id="btn-footer-relatorio" class="btn-primary" style="margin-top: 20px; background-color: #fff; color: var(--primary-color); border: 2px solid var(--primary-color);">
+                    <i class="far fa-envelope"></i> Quero receber meu relatório
+                </button>
             </div>
         </section>
     </main>
 
     <footer>
         <div class="container footer-content">
-            <p>&copy; 2023 IZI Imobiliária. Todos os direitos reservados.</p>
-            <div class="socials">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-facebook"></i></a>
-            </div>
+            <p>&copy; 2023 IZI Imobiliária.</p>
         </div>
     </footer>
 
+    <div id="modal-lead" class="modal-overlay hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2><i class="fas fa-calculator"></i> Resultado Pronto!</h2>
+                <p>Deixe seu contato para ver quanto você pode economizar.</p>
+            </div>
+            <form id="form-lead-capture">
+                <input type="text" id="lead-nome" placeholder="Seu Nome" required style="margin-bottom: 10px; width: 100%; padding: 10px;">
+                <input type="email" id="lead-email" placeholder="Seu E-mail" required style="margin-bottom: 10px; width: 100%; padding: 10px;">
+                <input type="tel" id="lead-whatsapp" placeholder="WhatsApp" required style="margin-bottom: 10px; width: 100%; padding: 10px;">
+                <button type="submit" class="btn-full">Ver Minha Economia</button>
+            </form>
+            <p style="font-size: 0.8rem; color:#888; margin-top:10px;">Seus dados estão seguros.</p>
+        </div>
+    </div>
+
     <script src="js/calculadora.js"></script>
     <script src="js/main.js"></script>
-
 </body>
 </html>
