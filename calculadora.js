@@ -35,58 +35,98 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // --- MOTOR DE CÁLCULO ---
-    function simularCenario(saldoInicial, prazoAnos, taxaAnual, extraMensal) {
+    // --- MOTOR DE CÁLCULO (HÍBRIDO: SAC e PRICE) ---
+    function simularFinanciamento(saldoInicial, prazoAnos, taxaAnual, sistema, extraMensal) {
         let saldoDevedor = saldoInicial;
         let prazoMeses = prazoAnos * 12;
         let taxaMensal = (taxaAnual / 100) / 12;
+        
         let totalJuros = 0;
         let mesesDecorridos = 0;
         let primeiraParcela = 0;
+        let ultimaParcela = 0;
 
+        // Loop mês a mês
         while (saldoDevedor > 1 && mesesDecorridos < prazoMeses) {
             mesesDecorridos++;
-            let potencia = Math.pow(1 + taxaMensal, prazoMeses); 
-            let parcelaBase = saldoInicial * ( (taxaMensal * potencia) / (potencia - 1) );
-            if(mesesDecorridos === 1) primeiraParcela = parcelaBase;
-
+            
             let jurosMes = saldoDevedor * taxaMensal;
-            let amortizacaoNormal = parcelaBase - jurosMes;
-            let amortizacaoTotal = amortizacaoNormal + extraMensal;
+            let amortizacao = 0;
+            let parcela = 0;
 
-            if (amortizacaoTotal > saldoDevedor) amortizacaoTotal = saldoDevedor;
+            if (sistema === 'sac') {
+                // SAC: Amortização constante
+                amortizacao = saldoInicial / (prazoAnos * 12); 
+                parcela = amortizacao + jurosMes;
+            } else {
+                // PRICE: Parcela fixa (baseada no prazo original)
+                let potencia = Math.pow(1 + taxaMensal, prazoMeses);
+                let pmtPrice = saldoInicial * ( (taxaMensal * potencia) / (potencia - 1) );
+                parcela = pmtPrice;
+                amortizacao = parcela - jurosMes;
+            }
+
+            if(mesesDecorridos === 1) primeiraParcela = parcela;
+
+            // Amortização Extra
+            let amortizacaoTotal = amortizacao + extraMensal;
+            
+            if (amortizacaoTotal > saldoDevedor) {
+                amortizacaoTotal = saldoDevedor;
+                parcela = amortizacaoTotal + jurosMes; 
+            }
 
             saldoDevedor -= amortizacaoTotal;
             totalJuros += jurosMes;
+            ultimaParcela = parcela;
         }
 
-        return { totalJuros: totalJuros, mesesReais: mesesDecorridos, parcelaInicial: primeiraParcela };
+        return {
+            totalJuros: totalJuros,
+            mesesReais: mesesDecorridos,
+            parcelaInicial: primeiraParcela,
+            parcelaFinal: ultimaParcela
+        };
     }
 
-    // --- CALCULAR IMÓVEL ---
+    // --- SUBMIT IMÓVEL ---
     document.getElementById('formImovel').addEventListener('submit', (e) => {
         e.preventDefault();
         const imovel = cleanNumber(document.getElementById('inputValorImovel').value);
         const entrada = cleanNumber(document.getElementById('inputEntrada').value);
         const extra = cleanNumber(document.getElementById('inputValorExtra').value);
         const anos = parseFloat(document.getElementById('inputPrazo').value);
+        const sistema = document.getElementById('selectSistema').value; // 'price' ou 'sac'
 
         if(imovel <= 0 || entrada >= imovel) { alert("Valores inválidos."); return; }
 
         const financiado = imovel - entrada;
-        const cenarioNormal = simularCenario(financiado, anos, 9.5, 0);
-        const cenarioTurbo = simularCenario(financiado, anos, 9.5, extra);
 
-        calculoPendente = { tipo: 'imovel', imovel: imovel, normal: cenarioNormal, turbo: cenarioTurbo, extra: extra };
+        // 1. Cenário Normal (Sem extra)
+        const cenarioNormal = simularFinanciamento(financiado, anos, 9.5, sistema, 0);
+        
+        // 2. Cenário Turbo (Com extra)
+        const cenarioTurbo = simularFinanciamento(financiado, anos, 9.5, sistema, extra);
+
+        calculoPendente = {
+            tipo: 'imovel',
+            imovel: imovel,
+            normal: cenarioNormal,
+            turbo: cenarioTurbo,
+            extra: extra,
+            sistema: sistema
+        };
+
         verificarLead();
     });
 
-    // --- CALCULAR RENDA ---
+    // --- SUBMIT RENDA ---
     document.getElementById('formRenda').addEventListener('submit', (e) => {
         e.preventDefault();
         const renda = cleanNumber(document.getElementById('inputRendaMensal').value);
         const entrada = cleanNumber(document.getElementById('inputEntradaRenda').value);
         
+        // Price Reverso (30% renda)
         const parcelaMax = renda * 0.30;
         const taxaMensal = (9.5 / 100) / 12;
         const potencia = Math.pow(1 + taxaMensal, 360);
@@ -96,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
         verificarLead();
     });
 
-    // --- MODAL & LEAD ---
+    // --- MODAL ---
     function verificarLead() {
         if(localStorage.getItem('izi_lead_ok') === 'true') {
             mostrarResultado();
@@ -129,18 +169,17 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const normal = calculoPendente.normal;
             document.getElementById('txtParcela').innerText = fmt.format(normal.parcelaInicial);
-            document.getElementById('txtPrazoOriginal').innerText = normal.mesesReais + " meses";
+            document.getElementById('txtUltimaParcela').innerText = fmt.format(normal.parcelaFinal);
 
             if(calculoPendente.extra > 0) {
                 document.getElementById('boxEconomia').classList.remove('hidden');
                 document.getElementById('txtValorExtraDisplay').innerText = fmt.format(calculoPendente.extra);
                 document.getElementById('txtEconomiaTotal').innerText = fmt.format(normal.totalJuros - calculoPendente.turbo.totalJuros);
-                document.getElementById('txtNovoPrazo').innerText = calculoPendente.turbo.mesesReais;
                 document.getElementById('txtAnosEconomizados').innerText = ((normal.mesesReais - calculoPendente.turbo.mesesReais)/12).toFixed(1);
-                msgZap = `Olá! Simulei um imóvel de ${fmt.format(calculoPendente.imovel)}. Com ${fmt.format(calculoPendente.extra)} extra, economizo juros!`;
+                msgZap = `Simulei (${calculoPendente.sistema.toUpperCase()}) um imóvel de ${fmt.format(calculoPendente.imovel)}. Com extra de ${fmt.format(calculoPendente.extra)}, economizo juros!`;
             } else {
                 document.getElementById('boxEconomia').classList.add('hidden');
-                msgZap = `Olá! Simulei um imóvel de ${fmt.format(calculoPendente.imovel)}. Parcela: ${fmt.format(normal.parcelaInicial)}.`;
+                msgZap = `Simulei (${calculoPendente.sistema.toUpperCase()}) um imóvel de ${fmt.format(calculoPendente.imovel)}. 1ª Parcela: ${fmt.format(normal.parcelaInicial)}.`;
             }
         } else {
             document.getElementById('resConteudoImovel').classList.add('hidden');

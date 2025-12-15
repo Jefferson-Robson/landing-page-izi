@@ -15,11 +15,12 @@ header { background: #fff; height: 90px; display: flex; align-items: center; box
 .logo { max-height: 60px; width: auto; transition: transform 0.2s; }
 .logo:hover { transform: scale(1.05); }
 
-.hero { background: linear-gradient(135deg, var(--primary-color) 0%, #001f3f 100%); color: white; padding: 80px 0 100px 0; text-align: center; }
-.hero h1 { font-size: 2.5rem; margin-bottom: 15px; font-weight: 700; }
+.hero { background: linear-gradient(135deg, var(--primary-color) 0%, #001f3f 100%); color: white; padding: 80px 0 120px 0; text-align: center; }
+.hero h1 { font-size: 2.2rem; margin-bottom: 15px; font-weight: 700; line-height: 1.2; }
+.hero p { font-size: 1.1rem; opacity: 0.95; max-width: 800px; margin: 0 auto 10px auto; }
 
 /* CARD & ABAS */
-.calculadora-section { margin-top: -60px; padding-bottom: 60px; }
+.calculadora-section { margin-top: -80px; padding-bottom: 60px; }
 .card-calculadora { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 550px; margin: 0 auto; position: relative; }
 
 .tabs-nav { display: flex; margin-bottom: 25px; border-bottom: 1px solid #eee; }
@@ -28,8 +29,11 @@ header { background: #fff; height: 90px; display: flex; align-items: center; box
 
 /* FORM */
 .form-group { margin-bottom: 15px; }
-label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 0.9rem; }
-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+.form-row { display: flex; gap: 15px; }
+.form-row .form-group { flex: 1; }
+
+label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 0.85rem; }
+input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; background: #fff; }
 .btn-primary { width: 100%; background-color: var(--accent-color); color: white; padding: 15px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
 .btn-primary:hover { background-color: #00b359; }
 
@@ -42,9 +46,9 @@ input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; 
 
 /* ECONOMIA */
 .box-economia { background-color: #e8f5e9; border: 1px solid #00d26a; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: left; }
-.box-economia h4 { color: #006633; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.box-economia h4 { color: #006633; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; font-size: 1rem; }
 .box-economia ul { padding-left: 20px; }
-.box-economia li { margin-bottom: 5px; font-size: 0.95rem; color: #333; }
+.box-economia li { margin-bottom: 5px; font-size: 0.9rem; color: #333; }
 .box-economia strong { color: #00d26a; }
 
 .btn-whatsapp { display: flex; justify-content: center; align-items: center; gap: 10px; background-color: #25D366; color: white; padding: 12px; border-radius: 50px; font-weight: 600; margin-top: 15px; text-decoration: none; transition: transform 0.2s; }
@@ -56,5 +60,5 @@ input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; 
 .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@media (max-width: 600px) { .resultado-grid { flex-direction: column; } .res-item { width: 100%; margin-bottom: 10px; } }
+@media (max-width: 600px) { .resultado-grid { flex-direction: column; } .res-item { width: 100%; margin-bottom: 10px; } .form-row { flex-direction: column; gap: 0; } }
 footer { text-align: center; padding: 30px; color: #666; font-size: 0.9rem; }

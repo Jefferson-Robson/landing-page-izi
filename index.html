@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Simule seu investimento imobiliário em Guaratuba.">
+    <meta name="description" content="Simule seu investimento imobiliário em Guaratuba. Antecipe-se à valorização da Ponte 2026.">
     
     <meta property="og:image" content="https://cdn1.valuegaia.com.br/gaiasite/69877/TEMA.LOGOTIPO_SITE/b084481766de0b49224691c3ad6bdce7-logo-png.png">
     
-    <title>IZI Imobiliária | Simulador</title>
+    <title>IZI Imobiliária | Simulador de Investimento</title>
 
     <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -16,7 +16,6 @@
     })(window,document,'script','dataLayer','GTM-PSJXHHWD');</script>
     
     <link rel="stylesheet" href="style.css">
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -36,7 +35,8 @@
         <section class="hero">
             <div class="container">
                 <h1>Invista em Guaratuba antes de 2026</h1>
-                <p>Simule a viabilidade do seu investimento e veja o poder da amortização.</p>
+                <p>A construção da <strong>Ponte de Guaratuba</strong> já começou e vai transformar a região. Especialistas preveem uma valorização recorde nos próximos 24 meses.</p>
+                <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.9;">Use nossa calculadora inteligente para encontrar o imóvel ideal e garantir seu patrimônio antes que os preços subam.</p>
             </div>
         </section>
 
@@ -57,21 +57,34 @@
                         <form id="formImovel">
                             <div class="form-group">
                                 <label>Valor do Imóvel</label>
-                                <input type="text" id="inputValorImovel" placeholder="R$ 450.000,00" required>
+                                <input type="text" id="inputValorImovel" placeholder="Ex: R$ 450.000,00" required>
                             </div>
-                            <div class="form-group">
-                                <label>Entrada</label>
-                                <input type="text" id="inputEntrada" placeholder="R$ 90.000,00" required>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Entrada</label>
+                                    <input type="text" id="inputEntrada" placeholder="R$ 90.000,00" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Sistema</label>
+                                    <select id="selectSistema">
+                                        <option value="price">PRICE (Fixas)</option>
+                                        <option value="sac">SAC (Decrescentes)</option>
+                                    </select>
+                                </div>
                             </div>
+
                             <div class="form-group">
                                 <label>Amortização Extra (Opcional)</label>
-                                <input type="text" id="inputValorExtra" placeholder="R$ 500,00 (O segredo!)">
+                                <input type="text" id="inputValorExtra" placeholder="Ex: R$ 500,00 (Segredo da economia!)">
                             </div>
+                            
                             <div class="form-group">
                                 <label>Prazo (Anos)</label>
                                 <input type="number" id="inputPrazo" value="30" required>
                             </div>
-                            <button type="submit" class="btn-primary">Calcular Economia</button>
+                            
+                            <button type="submit" class="btn-primary">Calcular Viabilidade</button>
                         </form>
                     </div>
 
@@ -79,11 +92,11 @@
                         <form id="formRenda">
                             <div class="form-group">
                                 <label>Renda Mensal Familiar</label>
-                                <input type="text" id="inputRendaMensal" placeholder="R$ 15.000,00" required>
+                                <input type="text" id="inputRendaMensal" placeholder="Ex: R$ 15.000,00" required>
                             </div>
                             <div class="form-group">
                                 <label>Entrada Disponível (Opcional)</label>
-                                <input type="text" id="inputEntradaRenda" placeholder="R$ 50.000,00">
+                                <input type="text" id="inputEntradaRenda" placeholder="Ex: R$ 50.000,00">
                             </div>
                             <button type="submit" class="btn-primary">Ver Poder de Compra</button>
                         </form>
@@ -91,43 +104,44 @@
 
                     <div id="resultadoBox" class="resultado-container hidden">
                         <hr>
-                        <h3>Resultado</h3>
+                        <h3>Resultado da Análise</h3>
                         
                         <div id="resConteudoImovel" class="hidden">
                             <div class="resultado-grid">
                                 <div class="res-item">
-                                    <span>Parcela Base:</span>
+                                    <span>Primeira Parcela:</span>
                                     <strong id="txtParcela" class="destaque-verde">R$ 0,00</strong>
                                 </div>
                                 <div class="res-item">
-                                    <span>Prazo:</span>
-                                    <strong id="txtPrazoOriginal">360 meses</strong>
+                                    <span>Última Parcela (Estimada):</span>
+                                    <strong id="txtUltimaParcela" style="color:#666;">R$ 0,00</strong>
                                 </div>
                             </div>
                             
                             <div id="boxEconomia" class="box-economia hidden">
                                 <h4><i class="fas fa-bolt"></i> Economia Turbo</h4>
-                                <p>Pagando <strong>+ <span id="txtValorExtraDisplay">R$ 0</span></strong>:</p>
+                                <p>Com <strong>+ <span id="txtValorExtraDisplay">R$ 0</span></strong> mensais:</p>
                                 <ul>
-                                    <li>💰 Economiza: <strong id="txtEconomiaTotal">R$ 0</strong></li>
-                                    <li>⏱️ Quita em: <strong id="txtNovoPrazo">0</strong> meses (menos <span id="txtAnosEconomizados">0</span> anos)</li>
+                                    <li>💰 Juros Economizados: <strong id="txtEconomiaTotal">R$ 0</strong></li>
+                                    <li>⏱️ Tempo Reduzido: <strong id="txtAnosEconomizados">0</strong> anos a menos!</li>
                                 </ul>
                             </div>
                         </div>
 
                         <div id="resConteudoRenda" class="hidden">
                             <div class="resultado-box-simple">
-                                <p>Potencial de Compra:</p>
+                                <p>Com sua renda, você financia até:</p>
                                 <strong id="txtPotencial" class="destaque-verde-lg">R$ 0,00</strong>
                             </div>
                         </div>
 
                         <div class="cta-box">
+                            <p>Quer ver imóveis neste perfil?</p>
                             <a href="#" id="btnZap" target="_blank" class="btn-whatsapp">
-                                <i class="fab fa-whatsapp"></i> Falar com Corretor
+                                <i class="fab fa-whatsapp"></i> Falar com Especialista
                             </a>
                         </div>
-                        <p class="aviso-legal">*Simulação PRICE.</p>
+                        <p class="aviso-legal">*Valores aproximados (Juros 9.5% a.a). Sujeito a aprovação de crédito.</p>
                     </div>
                 </div>
             </div>
@@ -137,14 +151,14 @@
     <div id="modal-lead" class="modal-overlay hidden">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h3>Quase lá! 🚀</h3>
-            <p>Informe seus dados para ver o resultado detalhado.</p>
+            <h3>Resultado Pronto! 🚀</h3>
+            <p>Informe seus dados para liberar o relatório completo.</p>
             <form id="formLead">
                 <div class="form-group">
-                    <input type="text" id="leadNome" placeholder="Nome" required>
+                    <input type="text" id="leadNome" placeholder="Seu Nome" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" id="leadEmail" placeholder="E-mail" required>
+                    <input type="email" id="leadEmail" placeholder="Seu E-mail" required>
                 </div>
                 <button type="submit" class="btn-primary">Ver Resultado</button>
             </form>
@@ -153,7 +167,7 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 IZI Imobiliária.</p>
+            <p>&copy; 2025 IZI Imobiliária - Especialistas na Ponte de Guaratuba.</p>
         </div>
     </footer>
 
