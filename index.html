@@ -36,7 +36,7 @@
         <section class="hero">
             <div class="container">
                 <h1>Invista em Guaratuba antes de 2026</h1>
-                <p>Simule a viabilidade do seu investimento e o poder da amortização.</p>
+                <p>Simule a viabilidade do seu investimento e veja o poder da amortização.</p>
             </div>
         </section>
 
@@ -64,25 +64,25 @@
                                 <input type="text" id="inputEntrada" placeholder="R$ 90.000,00" required>
                             </div>
                             <div class="form-group">
-                                <label>Extra Mensal (Opcional)</label>
-                                <input type="text" id="inputValorExtra" placeholder="R$ 500,00">
+                                <label>Amortização Extra (Opcional)</label>
+                                <input type="text" id="inputValorExtra" placeholder="R$ 500,00 (O segredo!)">
                             </div>
                             <div class="form-group">
                                 <label>Prazo (Anos)</label>
                                 <input type="number" id="inputPrazo" value="30" required>
                             </div>
-                            <button type="submit" class="btn-primary">Calcular</button>
+                            <button type="submit" class="btn-primary">Calcular Economia</button>
                         </form>
                     </div>
 
                     <div id="tab-renda" class="tab-content hidden">
                         <form id="formRenda">
                             <div class="form-group">
-                                <label>Renda Familiar</label>
+                                <label>Renda Mensal Familiar</label>
                                 <input type="text" id="inputRendaMensal" placeholder="R$ 15.000,00" required>
                             </div>
                             <div class="form-group">
-                                <label>Entrada (Opcional)</label>
+                                <label>Entrada Disponível (Opcional)</label>
                                 <input type="text" id="inputEntradaRenda" placeholder="R$ 50.000,00">
                             </div>
                             <button type="submit" class="btn-primary">Ver Poder de Compra</button>
@@ -104,12 +104,13 @@
                                     <strong id="txtPrazoOriginal">360 meses</strong>
                                 </div>
                             </div>
+                            
                             <div id="boxEconomia" class="box-economia hidden">
-                                <h4><i class="fas fa-bolt"></i> Economia com Extra</h4>
+                                <h4><i class="fas fa-bolt"></i> Economia Turbo</h4>
                                 <p>Pagando <strong>+ <span id="txtValorExtraDisplay">R$ 0</span></strong>:</p>
                                 <ul>
                                     <li>💰 Economiza: <strong id="txtEconomiaTotal">R$ 0</strong></li>
-                                    <li>⏱️ Novo Prazo: <strong id="txtNovoPrazo">0</strong> meses (menos <span id="txtAnosEconomizados">0</span> anos)</li>
+                                    <li>⏱️ Quita em: <strong id="txtNovoPrazo">0</strong> meses (menos <span id="txtAnosEconomizados">0</span> anos)</li>
                                 </ul>
                             </div>
                         </div>
@@ -137,7 +138,7 @@
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h3>Quase lá! 🚀</h3>
-            <p>Informe seus dados para ver o resultado.</p>
+            <p>Informe seus dados para ver o resultado detalhado.</p>
             <form id="formLead">
                 <div class="form-group">
                     <input type="text" id="leadNome" placeholder="Nome" required>
