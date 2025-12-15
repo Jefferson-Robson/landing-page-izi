@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const WHATSAPP_NUMBER = "5541996291417";
     let calculoPendente = null;
 
-    // --- MÁSCARAS ---
+    // --- MÁSCARAS DE MOEDA ---
     const inputs = ['inputValorImovel', 'inputEntrada', 'inputValorExtra', 'inputRendaMensal', 'inputEntradaRenda'];
     inputs.forEach(id => {
         const el = document.getElementById(id);
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return parseFloat(val.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
     }
 
-    // --- ABAS ---
+    // --- NAVEGAÇÃO POR ABAS ---
     const tabs = document.querySelectorAll('.tab-link');
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // --- SUBMIT IMÓVEL ---
+    // --- SUBMIT DO FORMULÁRIO IMÓVEL ---
     document.getElementById('formImovel').addEventListener('submit', (e) => {
         e.preventDefault();
         const imovel = cleanNumber(document.getElementById('inputValorImovel').value);
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         verificarLead();
     });
 
-    // --- SUBMIT RENDA ---
+    // --- SUBMIT DO FORMULÁRIO RENDA ---
     document.getElementById('formRenda').addEventListener('submit', (e) => {
         e.preventDefault();
         const renda = cleanNumber(document.getElementById('inputRendaMensal').value);
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         verificarLead();
     });
 
-    // --- MODAL ---
+    // --- CONTROLE DO MODAL ---
     function verificarLead() {
         if(localStorage.getItem('izi_lead_ok') === 'true') {
             mostrarResultado();
@@ -138,17 +138,66 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     document.querySelector('.close-modal').addEventListener('click', () => document.getElementById('modal-lead').classList.add('hidden'));
     
+    // --- ENVIO DO LEAD (INTEGRAÇÃO SHEET MONKEY) ---
     document.getElementById('formLead').addEventListener('submit', (e) => {
         e.preventDefault();
-        if(document.getElementById('leadNome').value) {
+
+        // Feedback visual no botão
+        const btn = e.target.querySelector('button');
+        const textoOriginal = btn.innerText;
+        btn.innerText = "Enviando...";
+        btn.disabled = true;
+        
+        const nome = document.getElementById('leadNome').value;
+        const email = document.getElementById('leadEmail').value;
+
+        // Prepara os dados organizados para a Planilha
+        const dadosParaPlanilha = {
+            'Data': new Date().toLocaleString('pt-BR'),
+            'Nome': nome,
+            'Email': email,
+            'Tipo': calculoPendente.tipo === 'imovel' ? 'Simulação Imóvel' : 'Análise Renda',
+            'Valor Imóvel': calculoPendente.imovel ? "R$ " + calculoPendente.imovel : '-',
+            'Renda': calculoPendente.renda ? "R$ " + calculoPendente.renda : '-',
+            'Valor Extra': calculoPendente.extra ? "R$ " + calculoPendente.extra : '0',
+            'Juros': calculoPendente.taxa ? calculoPendente.taxa + "%" : '-',
+            'Sistema': calculoPendente.sistema ? calculoPendente.sistema.toUpperCase() : '-'
+        };
+
+        // Envia para o Sheet Monkey (URL Inserida)
+        fetch('https://api.sheetmonkey.io/form/eMvHQotQoBvTkRNScSMEyw', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dadosParaPlanilha),
+        }).then(() => {
+            console.log("Lead salvo na planilha com sucesso!");
+            
+            // Salva cookie local para não pedir de novo
             localStorage.setItem('izi_lead_ok', 'true');
+            
+            // Dispara evento no Facebook (Pixel) e GTM
             if(window.dataLayer) window.dataLayer.push({'event': 'novo_lead_cadastrado'});
+            
+            // Fecha modal e mostra resultado
             document.getElementById('modal-lead').classList.add('hidden');
             mostrarResultado();
-        }
+
+            // Restaura botão
+            btn.innerText = textoOriginal;
+            btn.disabled = false;
+        }).catch(err => {
+            console.error("Erro ao salvar na planilha:", err);
+            // Mesmo se der erro na planilha, mostra o resultado para o cliente não travar
+            document.getElementById('modal-lead').classList.add('hidden');
+            mostrarResultado();
+            btn.innerText = textoOriginal;
+            btn.disabled = false;
+        });
     });
 
-    // --- EXIBIR RESULTADO ---
+    // --- EXIBIR RESULTADO NA TELA ---
     function mostrarResultado() {
         const box = document.getElementById('resultadoBox');
         const fmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -167,9 +216,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('boxEconomia').classList.remove('hidden');
                 document.getElementById('txtValorExtraDisplay').innerText = fmt.format(calculoPendente.extra);
                 document.getElementById('txtEconomiaTotal').innerText = fmt.format(normal.totalJuros - calculoPendente.turbo.totalJuros);
+                
                 let anosEco = ((normal.mesesReais - calculoPendente.turbo.mesesReais)/12).toFixed(1);
                 if(anosEco < 0) anosEco = 0;
                 document.getElementById('txtAnosEconomizados').innerText = anosEco;
+                
                 msgZap = `Simulei (${calculoPendente.sistema.toUpperCase()} a ${calculoPendente.taxa}%) um imóvel de ${fmt.format(calculoPendente.imovel)}. Com extra de ${fmt.format(calculoPendente.extra)}, economizo juros!`;
             } else {
                 document.getElementById('boxEconomia').classList.add('hidden');
