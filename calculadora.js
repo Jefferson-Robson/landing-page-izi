@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // --- MOTOR DE CÁLCULO (HÍBRIDO: SAC e PRICE) ---
+    // --- MOTOR DE CÁLCULO (SAC e PRICE) ---
     function simularFinanciamento(saldoInicial, prazoAnos, taxaAnual, sistema, extraMensal) {
         let saldoDevedor = saldoInicial;
         let prazoMeses = prazoAnos * 12;
@@ -46,8 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let primeiraParcela = 0;
         let ultimaParcela = 0;
 
-        // Loop mês a mês
-        while (saldoDevedor > 1 && mesesDecorridos < prazoMeses) {
+        while (saldoDevedor > 0.01 && mesesDecorridos < prazoMeses) {
             mesesDecorridos++;
             
             let jurosMes = saldoDevedor * taxaMensal;
@@ -55,11 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
             let parcela = 0;
 
             if (sistema === 'sac') {
-                // SAC: Amortização constante
                 amortizacao = saldoInicial / (prazoAnos * 12); 
                 parcela = amortizacao + jurosMes;
             } else {
-                // PRICE: Parcela fixa (baseada no prazo original)
                 let potencia = Math.pow(1 + taxaMensal, prazoMeses);
                 let pmtPrice = saldoInicial * ( (taxaMensal * potencia) / (potencia - 1) );
                 parcela = pmtPrice;
@@ -68,17 +65,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if(mesesDecorridos === 1) primeiraParcela = parcela;
 
-            // Amortização Extra
             let amortizacaoTotal = amortizacao + extraMensal;
             
-            if (amortizacaoTotal > saldoDevedor) {
+            if (amortizacaoTotal >= saldoDevedor) {
                 amortizacaoTotal = saldoDevedor;
                 parcela = amortizacaoTotal + jurosMes; 
+                saldoDevedor = 0; 
+            } else {
+                saldoDevedor -= amortizacaoTotal;
             }
 
-            saldoDevedor -= amortizacaoTotal;
             totalJuros += jurosMes;
-            ultimaParcela = parcela;
+            if(parcela > 0) ultimaParcela = parcela;
         }
 
         return {
@@ -96,27 +94,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const entrada = cleanNumber(document.getElementById('inputEntrada').value);
         const extra = cleanNumber(document.getElementById('inputValorExtra').value);
         const anos = parseFloat(document.getElementById('inputPrazo').value);
-        const sistema = document.getElementById('selectSistema').value; // 'price' ou 'sac'
+        const sistema = document.getElementById('selectSistema').value;
+        
+        let taxaJuros = parseFloat(document.getElementById('inputTaxa').value);
+        if(!taxaJuros || isNaN(taxaJuros)) taxaJuros = 9.5;
 
-        if(imovel <= 0 || entrada >= imovel) { alert("Valores inválidos."); return; }
+        if(imovel <= 0 || entrada >= imovel) { alert("A entrada deve ser menor que o valor do imóvel."); return; }
 
         const financiado = imovel - entrada;
-
-        // 1. Cenário Normal (Sem extra)
-        const cenarioNormal = simularFinanciamento(financiado, anos, 9.5, sistema, 0);
-        
-        // 2. Cenário Turbo (Com extra)
-        const cenarioTurbo = simularFinanciamento(financiado, anos, 9.5, sistema, extra);
+        const cenarioNormal = simularFinanciamento(financiado, anos, taxaJuros, sistema, 0);
+        const cenarioTurbo = simularFinanciamento(financiado, anos, taxaJuros, sistema, extra);
 
         calculoPendente = {
-            tipo: 'imovel',
-            imovel: imovel,
-            normal: cenarioNormal,
-            turbo: cenarioTurbo,
-            extra: extra,
-            sistema: sistema
+            tipo: 'imovel', imovel: imovel, normal: cenarioNormal, turbo: cenarioTurbo, extra: extra, sistema: sistema, taxa: taxaJuros
         };
-
         verificarLead();
     });
 
@@ -125,14 +116,15 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         const renda = cleanNumber(document.getElementById('inputRendaMensal').value);
         const entrada = cleanNumber(document.getElementById('inputEntradaRenda').value);
+        let taxaJuros = parseFloat(document.getElementById('inputTaxaRenda').value);
+        if(!taxaJuros || isNaN(taxaJuros)) taxaJuros = 9.5;
         
-        // Price Reverso (30% renda)
         const parcelaMax = renda * 0.30;
-        const taxaMensal = (9.5 / 100) / 12;
+        const taxaMensal = (taxaJuros / 100) / 12;
         const potencia = Math.pow(1 + taxaMensal, 360);
         const valorFinanciavel = parcelaMax * ( (potencia - 1) / (taxaMensal * potencia) );
         
-        calculoPendente = { tipo: 'renda', potencial: valorFinanciavel + entrada, renda: renda };
+        calculoPendente = { tipo: 'renda', potencial: valorFinanciavel + entrada, renda: renda, taxa: taxaJuros };
         verificarLead();
     });
 
@@ -175,11 +167,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('boxEconomia').classList.remove('hidden');
                 document.getElementById('txtValorExtraDisplay').innerText = fmt.format(calculoPendente.extra);
                 document.getElementById('txtEconomiaTotal').innerText = fmt.format(normal.totalJuros - calculoPendente.turbo.totalJuros);
-                document.getElementById('txtAnosEconomizados').innerText = ((normal.mesesReais - calculoPendente.turbo.mesesReais)/12).toFixed(1);
-                msgZap = `Simulei (${calculoPendente.sistema.toUpperCase()}) um imóvel de ${fmt.format(calculoPendente.imovel)}. Com extra de ${fmt.format(calculoPendente.extra)}, economizo juros!`;
+                let anosEco = ((normal.mesesReais - calculoPendente.turbo.mesesReais)/12).toFixed(1);
+                if(anosEco < 0) anosEco = 0;
+                document.getElementById('txtAnosEconomizados').innerText = anosEco;
+                msgZap = `Simulei (${calculoPendente.sistema.toUpperCase()} a ${calculoPendente.taxa}%) um imóvel de ${fmt.format(calculoPendente.imovel)}. Com extra de ${fmt.format(calculoPendente.extra)}, economizo juros!`;
             } else {
                 document.getElementById('boxEconomia').classList.add('hidden');
-                msgZap = `Simulei (${calculoPendente.sistema.toUpperCase()}) um imóvel de ${fmt.format(calculoPendente.imovel)}. 1ª Parcela: ${fmt.format(normal.parcelaInicial)}.`;
+                msgZap = `Simulei (${calculoPendente.sistema.toUpperCase()} a ${calculoPendente.taxa}%) um imóvel de ${fmt.format(calculoPendente.imovel)}.`;
             }
         } else {
             document.getElementById('resConteudoImovel').classList.add('hidden');
