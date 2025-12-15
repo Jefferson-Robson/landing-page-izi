@@ -54,29 +54,37 @@ input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radiu
 .btn-whatsapp { display: flex; justify-content: center; align-items: center; gap: 10px; background-color: #25D366; color: white; padding: 12px; border-radius: 50px; font-weight: 600; margin-top: 15px; text-decoration: none; transition: transform 0.2s; }
 .btn-whatsapp:hover { transform: scale(1.02); }
 
-/* WHATSAPP FLUTUANTE */
+/* --- BOTÃO WHATSAPP CORRIGIDO (Mobile & Desktop) --- */
 .whatsapp-float {
     position: fixed;
     width: 60px;
     height: 60px;
-    bottom: 25px;
-    right: 25px;
+    bottom: 30px;
+    right: 30px;
     background-color: #25d366;
     color: #FFF;
-    border-radius: 50px;
+    border-radius: 50%;
     text-align: center;
-    font-size: 30px;
-    box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-    z-index: 1000;
+    font-size: 35px; /* Ícone maior */
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    z-index: 10000; /* Garante que fica em cima de tudo */
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.3s ease;
     text-decoration: none;
+    animation: pulse 2s infinite; /* Animação para chamar atenção */
 }
+
 .whatsapp-float:hover {
     background-color: #1ebc57;
+    animation: none; /* Para de pulsar ao passar o mouse */
     transform: scale(1.1);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
 }
 
 /* MODAL */
@@ -85,5 +93,21 @@ input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radiu
 .close-modal { position: absolute; top: 10px; right: 15px; font-size: 24px; cursor: pointer; color: #999; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@media (max-width: 600px) { .resultado-grid { flex-direction: column; } .res-item { width: 100%; margin-bottom: 10px; } .form-row { flex-direction: column; gap: 0; } }
+
+/* MOBILE RESPONSIVO */
+@media (max-width: 600px) {
+    .resultado-grid { flex-direction: column; }
+    .res-item { width: 100%; margin-bottom: 10px; }
+    .form-row { flex-direction: column; gap: 0; }
+    
+    /* Ajuste específico para o botão no celular */
+    .whatsapp-float {
+        width: 65px;  /* Um pouco maior no toque */
+        height: 65px;
+        bottom: 20px; /* Mais perto da borda */
+        right: 20px;
+        font-size: 38px; /* Ícone bem grande */
+    }
+}
+
 footer { text-align: center; padding: 30px; color: #666; font-size: 0.9rem; }
